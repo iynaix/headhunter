@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import "./bulmaswatch.min.css"
 import doctorImage from "./TheDoctor.png"
 import fiendImage from "./TheFiend.png"
-import { formatNumber, fetchCurrencyRates, fetchCardRates } from "./utils"
+import { fetchCurrencyRates, fetchCardRates } from "./utils"
 import DivCard from "./div_card"
 
 const parseCards = cards => {
@@ -27,16 +27,25 @@ class Home extends Component {
         mirror: undefined,
         cards: undefined,
         doctorCount: 0,
-        fiendCount: 6,
+        fiendCount: 8,
         // how much of current currency can be converted
         liquidationRatio: 0.6,
     }
 
     handleChange = key => e => {
         this.setState({ [key]: e.target.value })
+        if (key === "yourTotal") {
+            localStorage.setItem(key, e.target.value)
+        }
     }
 
     componentDidMount() {
+        // get your total from localStorage
+        const yourTotal = localStorage.getItem("yourTotal")
+        this.setState({
+            yourTotal: parseFloat(yourTotal) || 0,
+        })
+
         // fetch currency
         fetchCurrencyRates().then(currency => {
             const mirror = currency.find(({ currencyTypeName }) =>
