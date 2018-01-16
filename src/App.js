@@ -73,6 +73,12 @@ class Home extends Component {
                     </div>
                     <div className="level-item has-text-centered">
                         <div>
+                            <p className="heading is-size-6">Progress</p>
+                            <p id="total_progress" className="title is-size-1" />
+                        </div>
+                    </div>
+                    <div className="level-item has-text-centered">
+                        <div>
                             <p className="heading is-size-6">Liquidation Ratio</p>
                             <p className="title">
                                 <input

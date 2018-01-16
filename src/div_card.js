@@ -1,7 +1,7 @@
 import React from "react"
 
 import { CARD_DATA } from "./constants"
-import { formatNumber } from "./utils"
+import { num } from "./utils"
 
 const leagueEnd = new Date(2018, 3 - 1, 6, 4)
 const DAYS_LEFT = Math.floor((leagueEnd.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
@@ -42,22 +42,20 @@ const DivCard = ({ total, cardName, value, count = 0, onChangeCardCount }) => {
                             </tr>
                             <tr>
                                 <td className="has-text-right">Total</td>
-                                <td>{formatNumber(cardTotal)}</td>
+                                <td>{num(cardTotal)}</td>
                             </tr>
                             <tr>
                                 <td className="has-text-right">Remaining</td>
-                                <td>{formatNumber(cardRemaining)}</td>
+                                <td>{num(cardRemaining)}</td>
                             </tr>
                             <tr>
                                 <td className="has-text-right">Chaos Per Day</td>
-                                <td>{formatNumber((cardRemaining - total) / DAYS_LEFT)}</td>
+                                <td>{num(Math.max((cardRemaining - total) / DAYS_LEFT, 0))}</td>
                             </tr>
                             <tr>
                                 <td className="has-text-right">Progress</td>
                                 <td>
-                                    {formatNumber(
-                                        Math.min((count * value + total) / cardTotal * 100, 100)
-                                    )}%
+                                    {num(Math.min((count * value + total) / cardTotal * 100, 100))}%
                                 </td>
                             </tr>
                         </tbody>

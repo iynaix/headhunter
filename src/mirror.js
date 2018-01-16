@@ -1,5 +1,8 @@
 import React from "react"
+import ReactDOM from "react-dom"
 
+import { CARD_DATA } from "./constants"
+import { num } from "./utils"
 import DivCard from "./div_card"
 
 class Mirror extends React.Component {
@@ -22,11 +25,24 @@ class Mirror extends React.Component {
         })
     }
 
+    getTotalProgress = () => {
+        const { mirrors, immortal } = this.props.cards
+        const total = this.props.yourTotal * this.props.liquidationRatio
+
+        const finalTotal = mirrors.chaosValue * CARD_DATA["house of mirrors"].total
+
+        const immortalTotal = this.state.immortalCount * immortal.chaosValue
+        const houseOfMirrorsTotal = this.state.houseOfMirrorsCount * mirrors.chaosValue
+
+        const progress = (houseOfMirrorsTotal + immortalTotal + total) / finalTotal * 100
+
+        return Math.min(progress, 100)
+    }
+
     render() {
+        const totalProgressEl = document.getElementById("total_progress")
         const { yourTotal, liquidationRatio, cards } = this.props
         const { mirrors, immortal } = cards
-
-        const completedRatio = this.state.houseOfMirrorsCount / 8 + this.state.immortalCount / 11
 
         return (
             <div className="columns">
@@ -45,6 +61,10 @@ class Mirror extends React.Component {
                     value={mirrors.chaosValue}
                     onChangeCardCount={this.handleChange("houseOfMirrorsCount")}
                 />
+
+                {/* TOTAL PROGRESS */}
+                {totalProgressEl &&
+                    ReactDOM.createPortal(`${num(this.getTotalProgress())}%`, totalProgressEl)}
             </div>
         )
     }

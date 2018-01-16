@@ -4,7 +4,11 @@ const CORS_PROXY_URL = "https://cors-anywhere.herokuapp.com/"
 const POE_NINJA_URL = "http://poe.ninja/api/Data/"
 const LEAGUE = "Abyss"
 
-export const formatNumber = n => {
+export const num = n => {
+    if ((n | 0) === n) {
+        return n
+    }
+
     n = parseFloat(Math.round(n * 100) / 100).toFixed(2)
     return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 }
@@ -20,7 +24,7 @@ const fetchNinja = endpoint => {
         .then(json => json.lines)
 }
 
-export const percent = (current, total) => `${formatNumber(current / total * 100)}%`
+export const percent = (current, total) => `${num(current / total * 100)}%`
 
 // fetch divination cards
 export const fetchCardRates = () => {

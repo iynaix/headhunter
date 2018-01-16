@@ -1,5 +1,8 @@
 import React from "react"
+import ReactDOM from "react-dom"
 
+import { CARD_DATA } from "./constants"
+import { num } from "./utils"
 import DivCard from "./div_card"
 
 class Headhunter extends React.Component {
@@ -22,7 +25,25 @@ class Headhunter extends React.Component {
         })
     }
 
+    getTotalProgress = () => {
+        const { doctor, fiend } = this.props.cards
+        const total = this.props.yourTotal * this.props.liquidationRatio
+
+        const fiendProgress =
+            (this.state.fiendCount * fiend.chaosValue + total) /
+            (fiend.chaosValue * CARD_DATA.fiend.total)
+
+        const doctorProgress =
+            (this.state.doctorCount * doctor.chaosValue + total) /
+            (doctor.chaosValue * CARD_DATA.doctor.total)
+
+        const progress = Math.max(fiendProgress, doctorProgress) * 100
+
+        return Math.min(progress, 100)
+    }
+
     render() {
+        const totalProgressEl = document.getElementById("total_progress")
         const { yourTotal, liquidationRatio, cards } = this.props
         const { doctor, fiend } = cards
 
@@ -43,6 +64,10 @@ class Headhunter extends React.Component {
                     value={doctor.chaosValue}
                     onChangeCardCount={this.handleChange("doctorCount")}
                 />
+
+                {/* TOTAL PROGRESS */}
+                {totalProgressEl &&
+                    ReactDOM.createPortal(`${num(this.getTotalProgress())}%`, totalProgressEl)}
             </div>
         )
     }
