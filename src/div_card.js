@@ -1,33 +1,24 @@
 import React from "react"
 
+import { CARD_DATA } from "./constants"
 import { formatNumber } from "./utils"
 
-const LEAGUE_END = new Date(2018, 3 - 1, 6, 4)
-const daysLeft = Math.floor((LEAGUE_END.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+const leagueEnd = new Date(2018, 3 - 1, 6, 4)
+const DAYS_LEFT = Math.floor((leagueEnd.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
 
-const percent = (current, total) => (total === 0 ? 100 : current / total * 100)
+const DivCard = ({ total, cardName, value, count = 0, onChangeCardCount }) => {
+    const CARD = CARD_DATA[cardName.toLowerCase()]
 
-const DivCard = ({
-    total,
-    mirror,
-    cardName,
-    cardImage,
-    cardValue,
-    cardCount = 0,
-    completedRatio,
-    numCards,
-    onChangeCardCount,
-}) => {
-    const cardTotal = cardValue * numCards
+    const cardTotal = value * CARD.total
     // take the completed ratio into account, since that is locked in stone
-    const cardRemaining = (1 - completedRatio) * cardTotal
+    const cardRemaining = (CARD.total - count) * value
 
     return (
         <div className="column">
             <div className="card">
                 <div className="card-image">
                     <figure className="image">
-                        <img alt={cardName} src={cardImage} />
+                        <img alt={cardName} src={CARD.image} />
                     </figure>
                 </div>
                 <div className="card-content">
@@ -40,17 +31,17 @@ const DivCard = ({
                                         className="input is-small"
                                         type="number"
                                         min={0}
-                                        max={numCards}
-                                        value={cardCount}
+                                        max={CARD.total}
+                                        value={count}
                                         onChange={onChangeCardCount}
                                         style={{ width: 50, marginRight: 8 }}
                                     />
                                     {" of "}
-                                    {numCards}
+                                    {CARD.total}
                                 </td>
                             </tr>
                             <tr>
-                                <td className="has-text-right">Total Required</td>
+                                <td className="has-text-right">Total</td>
                                 <td>{formatNumber(cardTotal)}</td>
                             </tr>
                             <tr>
@@ -59,23 +50,13 @@ const DivCard = ({
                             </tr>
                             <tr>
                                 <td className="has-text-right">Chaos Per Day</td>
-                                <td>{formatNumber((cardRemaining - total) / daysLeft)}</td>
+                                <td>{formatNumber((cardRemaining - total) / DAYS_LEFT)}</td>
                             </tr>
                             <tr>
-                                <td className="has-text-right">With Mirror</td>
+                                <td className="has-text-right">Progress</td>
                                 <td>
                                     {formatNumber(
-                                        completedRatio * 100 +
-                                            percent(total + mirror, cardRemaining)
-                                    )}%
-                                </td>
-                            </tr>
-                            <tr>
-                                <td className="has-text-right">Normal</td>
-                                <td>
-                                    {formatNumber(
-                                        completedRatio * 100 + percent(total, cardRemaining),
-                                        100
+                                        Math.min((count * value + total) / cardTotal * 100, 100)
                                     )}%
                                 </td>
                             </tr>

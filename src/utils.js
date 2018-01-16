@@ -22,14 +22,6 @@ const fetchNinja = endpoint => {
 
 export const percent = (current, total) => `${formatNumber(current / total * 100)}%`
 
-// fetch currency
-export const fetchCurrencyRates = () => {
-    if (process.env.NODE_ENV === "production") {
-        return fetchNinja("GetCurrencyOverview")
-    }
-    return Promise.resolve(require("./currency.json").lines)
-}
-
 // fetch divination cards
 export const fetchCardRates = () => {
     if (process.env.NODE_ENV === "production") {
