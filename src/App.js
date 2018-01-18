@@ -4,6 +4,8 @@ import "./bulmaswatch.min.css"
 import { fetchCardRates } from "./utils"
 import Headhunter from "./headhunter"
 import Mirror from "./mirror"
+import headhunterImg from "./Headhunter.png"
+import mirrorImg from "./Mirror.png"
 
 const parseCards = cards => {
     const ret = {}
@@ -88,7 +90,7 @@ class Home extends Component {
                                     onChange={this.handleChange("liquidationRatio")}
                                     min={0}
                                     max={1}
-                                    step={0.01}
+                                    step={0.1}
                                 />
                             </p>
                         </div>
@@ -107,7 +109,11 @@ class Home extends Component {
                             <span className="icon is-small">
                                 <i className="fas fa-image" />
                             </span>
-                            <span>Headhunter</span>
+                            <img
+                                src={headhunterImg}
+                                alt="Headhunter"
+                                style={{ height: "1.5rem" }}
+                            />
                         </a>
                     </li>
                     <li className={this.state.activeTab === 1 ? "is-active" : ""}>
@@ -115,7 +121,7 @@ class Home extends Component {
                             <span className="icon is-small">
                                 <i className="fas fa-music" />
                             </span>
-                            <span>Mirror</span>
+                            <img src={mirrorImg} alt="Mirror" style={{ height: "1.5rem" }} />
                         </a>
                     </li>
                 </ul>
