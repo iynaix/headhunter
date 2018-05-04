@@ -3,14 +3,6 @@ import fetch from "isomorphic-fetch"
 const CORS_PROXY_URL = "https://cors-anywhere.herokuapp.com/"
 const POE_NINJA_URL = "http://poe.ninja/api/Data/"
 
-const getLeague = () => {
-    const bestiary = Date.UTC(2018, 3 - 1, 2, 24 - 4)
-    if (new Date() - bestiary >= 0) {
-        return "Bestiary"
-    }
-    return "Abyss"
-}
-
 export const num = n => {
     if ((n | 0) === n) {
         return n
@@ -20,22 +12,29 @@ export const num = n => {
     return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 }
 
-const fetchNinja = endpoint => {
+const fetchNinja = async (endpoint, league) => {
     const now = new Date()
     const dt = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`
 
-    return fetch(`${CORS_PROXY_URL}${POE_NINJA_URL}${endpoint}?league=${getLeague()}&date=${dt}`, {
-        headers: { "X-Requested-With": "XMLHttpRequest" },
-    })
-        .then(resp => resp.json())
-        .then(json => json.lines)
+    const resp = await fetch(
+        `${CORS_PROXY_URL}${POE_NINJA_URL}${endpoint}?league=${league}&date=${dt}`,
+        {
+            headers: { "X-Requested-With": "XMLHttpRequest" },
+        }
+    )
+
+    if (resp.status >= 400) {
+        throw new Error("Bad response from server")
+    }
+
+    return await resp.json()
 }
 
 export const percent = (current, total) => `${num(current / total * 100)}%`
 
 // fetch divination cards
-export const fetchCardRates = () => {
-    return fetchNinja("GetDivinationCardsOverview")
+export const fetchCardRates = league => {
+    return fetchNinja("GetDivinationCardsOverview", league)
 
     /*
     if (process.env.NODE_ENV === "production") {

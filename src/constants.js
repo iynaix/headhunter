@@ -21,3 +21,12 @@ export const CARD_DATA = {
         image: HOUSE_OF_MIRRORS_IMAGE,
     },
 }
+
+export const LEAGUES = [
+    "Bestiary",
+    "HC Bestiary",
+    "Flashback",
+    "HC Flashback",
+    "Standard",
+    "Hardcore",
+]

@@ -3,7 +3,7 @@ import React from "react"
 import { CARD_DATA } from "./constants"
 import { num } from "./utils"
 
-const leagueEnd = new Date(2018, 3 - 1, 6, 4)
+const leagueEnd = new Date(2018, 5 - 1, 28, 4)
 const DAYS_LEFT = Math.floor((leagueEnd.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
 
 const DivCard = ({ total, cardName, value, count = 0, onChangeCardCount }) => {

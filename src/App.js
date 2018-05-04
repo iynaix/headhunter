@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import "./bulmaswatch.min.css"
 
+import { LEAGUES } from "./constants"
 import { fetchCardRates } from "./utils"
 import Headhunter from "./headhunter"
 import Mirror from "./mirror"
@@ -28,6 +29,7 @@ class Home extends Component {
         cards: undefined,
         // how much of current currency can be converted
         liquidationRatio: 0.6,
+        league: LEAGUES[0],
     }
 
     componentDidMount() {
@@ -39,7 +41,7 @@ class Home extends Component {
         })
 
         // fetch divination cards
-        fetchCardRates().then(cards => {
+        fetchCardRates(localStorage.getItem("league")).then(({ lines: cards }) => {
             this.setState({
                 cards: parseCards(cards),
             })
@@ -100,6 +102,29 @@ class Home extends Component {
         )
     }
 
+    renderLeagueSelect() {
+        return (
+            <nav className="level" style={{ marginTop: "1rem", marginBottom: "1rem" }}>
+                <div className="level-item has-text-centered">
+                    <div className="select">
+                        <select
+                            id="league"
+                            name="league"
+                            value={this.state.league}
+                            onChange={this.handleChange("league")}
+                        >
+                            {LEAGUES.map(league => (
+                                <option key={league} value={league}>
+                                    {league}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+            </nav>
+        )
+    }
+
     renderTopTabs() {
         return (
             <div className="tabs is-toggle is-fullwidth">
@@ -136,6 +161,7 @@ class Home extends Component {
 
         return (
             <div>
+                {this.renderLeagueSelect()}
                 {this.renderTopTabs()}
                 <div style={{ margin: "2rem" }}>{this.renderTotalHeader()}</div>
                 <div>
