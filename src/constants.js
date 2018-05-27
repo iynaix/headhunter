@@ -22,11 +22,7 @@ export const CARD_DATA = {
     },
 }
 
-export const LEAGUES = [
-    "Bestiary",
-    "HC Bestiary",
-    "Flashback",
-    "HC Flashback",
-    "Standard",
-    "Hardcore",
-]
+const leagueVariants = league =>
+    league === "Standard" ? ["Standard", "Hardcore"] : [league, `HC ${league}`]
+
+export const LEAGUES = [...leagueVariants("Incursion"), ...leagueVariants("Standard")]
