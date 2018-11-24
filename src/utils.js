@@ -30,7 +30,7 @@ const fetchNinja = async (endpoint, league) => {
     return await resp.json()
 }
 
-export const percent = (current, total) => `${num(current / total * 100)}%`
+export const percent = (current, total) => `${num((current / total) * 100)}%`
 
 // fetch divination cards
 export const fetchCardRates = league => {

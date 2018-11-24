@@ -33,7 +33,9 @@ const DivCard = ({ card, userTotal, count = 0, onChangeCardCount }) => {
                                         min={0}
                                         max={stackSize}
                                         value={count}
-                                        onChange={onChangeCardCount}
+                                        onChange={e => {
+                                            onChangeCardCount(e.target.value)
+                                        }}
                                         style={{ width: 80, marginRight: 8 }}
                                     />
                                     {" of "}

@@ -62,7 +62,7 @@ const CARDS_RESPONSE = {
 
 class Home extends Component {
     state = {
-        activeTab: 1,
+        activeTab: 0,
         yourTotal: 0,
         cards: undefined,
         // how much of current currency can be converted

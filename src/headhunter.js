@@ -1,63 +1,49 @@
-import React, { Component } from "react"
+import React, { useState } from "react"
 import ReactDOM from "react-dom"
 
 import { num } from "./utils"
 import DivCard from "./div_card"
 
-class Headhunter extends Component {
-    state = {
-        doctorCount: 0,
-        fiendCount: 0,
-    }
+const cardProgress = (card, userTotal, count) =>
+    (count * card.chaosValue + userTotal) / (card.chaosValue * card.stackSize)
 
-    handleChange = key => e => {
-        this.setState({ [key]: e.target.value })
-    }
+const Headhunter = ({ cards, userTotal }) => {
+    const totalProgressEl = document.getElementById("total_progress")
 
-    getTotalProgress = () => {
-        const fiend = this.props.cards["The Fiend"]
-        const doctor = this.props.cards["The Doctor"]
-        const { userTotal } = this.props
+    const [fiendCount, setFiendCount] = useState(0)
+    const [doctorCount, setDoctorCount] = useState(0)
 
-        const fiendProgress =
-            (this.state.fiendCount * fiend.chaosValue + userTotal) /
-            (fiend.chaosValue * fiend.stackSize)
+    const fiend = cards["The Fiend"]
+    const doctor = cards["The Doctor"]
 
-        const doctorProgress =
-            (this.state.doctorCount * doctor.chaosValue + userTotal) /
-            (doctor.chaosValue * doctor.stackSize)
+    const totalProgress =
+        Math.min(
+            Math.max(
+                cardProgress(fiend, userTotal, fiendCount),
+                cardProgress(doctor, userTotal, doctorCount)
+            ) * 100,
+            100
+        ) || 0
 
-        const progress = Math.max(fiendProgress, doctorProgress) * 100
+    return (
+        <div className="columns">
+            <DivCard
+                card={fiend}
+                userTotal={userTotal}
+                count={fiendCount}
+                onChangeCardCount={setFiendCount}
+            />
 
-        return Math.min(progress, 100)
-    }
+            <DivCard
+                card={doctor}
+                userTotal={userTotal}
+                count={doctorCount}
+                onChangeCardCount={setDoctorCount}
+            />
 
-    render() {
-        const totalProgressEl = document.getElementById("total_progress")
-        const { cards, userTotal } = this.props
-
-        return (
-            <div className="columns">
-                <DivCard
-                    card={cards["The Fiend"]}
-                    userTotal={userTotal}
-                    count={this.state.fiendCount}
-                    onChangeCardCount={this.handleChange("fiendCount")}
-                />
-
-                <DivCard
-                    card={cards["The Doctor"]}
-                    userTotal={userTotal}
-                    count={this.state.doctorCount}
-                    onChangeCardCount={this.handleChange("doctorCount")}
-                />
-
-                {/* TOTAL PROGRESS */}
-                {totalProgressEl &&
-                    ReactDOM.createPortal(`${num(this.getTotalProgress())}%`, totalProgressEl)}
-            </div>
-        )
-    }
+            {/* {totalProgressEl && ReactDOM.createPortal(`${num(totalProgress)}%`)} */}
+        </div>
+    )
 }
 
 export default Headhunter

@@ -1,60 +1,45 @@
-import React, { Component } from "react"
+import React, { useState } from "react"
 import ReactDOM from "react-dom"
 
 import { num } from "./utils"
 import DivCard from "./div_card"
 
-class Mirror extends Component {
-    state = {
-        houseOfMirrorsCount: 0,
-        immortalCount: 0,
-    }
+const Mirror = ({ cards, userTotal }) => {
+    const totalProgressEl = document.getElementById("total_progress")
 
-    handleChange = key => e => {
-        this.setState({ [key]: e.target.value })
-    }
+    const [immortalCount, setImmortalCount] = useState(0)
+    const [houseOfMirrorsCount, setHouseOfMirrorsCount] = useState(0)
 
-    getTotalProgress = () => {
-        const immortal = this.props.cards["The Immortal"]
-        const mirrors = this.props.cards["House of Mirrors"]
-        const { userTotal } = this.props
+    const immortal = cards["The Immortal"]
+    const houseOfMirrors = cards["House of Mirrors"]
 
-        const finalTotal = mirrors.chaosValue * mirrors.stackSize
+    const finalTotal = houseOfMirrors.chaosValue * houseOfMirrors.stackSize
 
-        const immortalTotal = this.state.immortalCount * immortal.chaosValue
-        const houseOfMirrorsTotal = this.state.houseOfMirrorsCount * mirrors.chaosValue
+    const immortalTotal = immortalCount * immortal.chaosValue
+    const houseOfMirrorsTotal = houseOfMirrorsCount * houseOfMirrors.chaosValue
 
-        const progress = ((houseOfMirrorsTotal + immortalTotal + userTotal) / finalTotal) * 100
+    const totalProgress =
+        Math.min(((houseOfMirrorsTotal + immortalTotal + userTotal) / finalTotal) * 100, 100) || 0
 
-        return Math.min(progress, 100)
-    }
+    return (
+        <div className="columns">
+            <DivCard
+                card={immortal}
+                userTotal={userTotal}
+                count={immortalCount}
+                onChangeCardCount={setImmortalCount}
+            />
 
-    render() {
-        const totalProgressEl = document.getElementById("total_progress")
-        const { cards, userTotal } = this.props
+            <DivCard
+                card={houseOfMirrors}
+                userTotal={userTotal}
+                count={houseOfMirrorsCount}
+                onChangeCardCount={setHouseOfMirrorsCount}
+            />
 
-        return (
-            <div className="columns">
-                <DivCard
-                    card={cards["The Immortal"]}
-                    userTotal={userTotal}
-                    count={this.state.immortalCount}
-                    onChangeCardCount={this.handleChange("immortalCount")}
-                />
-
-                <DivCard
-                    card={cards["House of Mirrors"]}
-                    userTotal={userTotal}
-                    count={this.state.houseOfMirrorsCount}
-                    onChangeCardCount={this.handleChange("houseOfMirrorsCount")}
-                />
-
-                {/* TOTAL PROGRESS */}
-                {totalProgressEl &&
-                    ReactDOM.createPortal(`${num(this.getTotalProgress())}%`, totalProgressEl)}
-            </div>
-        )
-    }
+            {/* {totalProgressEl && ReactDOM.createPortal(`${num(totalProgress)}%`, totalProgressEl)} */}
+        </div>
+    )
 }
 
 export default Mirror
