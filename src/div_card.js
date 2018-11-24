@@ -5,11 +5,11 @@ import { num } from "./utils"
 const leagueEnd = new Date(2018, 5 - 1, 28, 4)
 const DAYS_LEFT = Math.floor((leagueEnd.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
 
-const DivCard = ({ card, userTotal, count = 0, onChangeCardCount }) => {
+const DivCard = ({ card, userTotal, count }) => {
     const { name, artFilename, chaosValue, stackSize } = card
     const cardTotal = chaosValue * stackSize
     // take the completed ratio into account, since that is locked in stone
-    const cardRemaining = (stackSize - count) * chaosValue
+    const cardRemaining = (stackSize - count.value) * chaosValue
 
     const imgUrl = `${process.env.PUBLIC_URL}/images/${artFilename}.png`
 
@@ -32,10 +32,7 @@ const DivCard = ({ card, userTotal, count = 0, onChangeCardCount }) => {
                                         type="number"
                                         min={0}
                                         max={stackSize}
-                                        value={count}
-                                        onChange={e => {
-                                            onChangeCardCount(e.target.value)
-                                        }}
+                                        {...count}
                                         style={{ width: 80, marginRight: 8 }}
                                     />
                                     {" of "}
@@ -59,7 +56,8 @@ const DivCard = ({ card, userTotal, count = 0, onChangeCardCount }) => {
                                 <td>
                                     {num(
                                         Math.min(
-                                            ((count * chaosValue + userTotal) / cardTotal) * 100,
+                                            ((count.value * chaosValue + userTotal) / cardTotal) *
+                                                100,
                                             100
                                         )
                                     )}

@@ -1,7 +1,4 @@
-import fetch from "isomorphic-fetch"
-
-const CORS_PROXY_URL = "https://cors-anywhere.herokuapp.com/"
-const POE_NINJA_URL = "http://poe.ninja/api/Data/"
+import { useState } from "react"
 
 export const num = n => {
     if ((n | 0) === n) {
@@ -12,34 +9,14 @@ export const num = n => {
     return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 }
 
-const fetchNinja = async (endpoint, league) => {
-    const now = new Date()
-    const dt = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`
-
-    const resp = await fetch(
-        `${CORS_PROXY_URL}${POE_NINJA_URL}${endpoint}?league=${league}&date=${dt}`,
-        {
-            headers: { "X-Requested-With": "XMLHttpRequest" },
-        }
-    )
-
-    if (resp.status >= 400) {
-        throw new Error("Bad response from server")
+export const useInput = initial => {
+    const [v, useV] = useState(initial)
+    return {
+        value: v,
+        onChange: e => {
+            useV(e.target.value)
+        },
     }
-
-    return await resp.json()
 }
 
 export const percent = (current, total) => `${num((current / total) * 100)}%`
-
-// fetch divination cards
-export const fetchCardRates = league => {
-    return fetchNinja("GetDivinationCardsOverview", league)
-
-    /*
-    if (process.env.NODE_ENV === "production") {
-        return fetchNinja("GetDivinationCardsOverview")
-    }
-    return Promise.resolve(require("./cards.json").lines)
-    */
-}

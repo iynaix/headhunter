@@ -1,9 +1,10 @@
-import React, { Component } from "react"
+import React, { useState } from "react"
 import { Query } from "react-apollo"
 import gql from "graphql-tag"
 import keyBy from "lodash/keyBy"
 
 import { LEAGUES } from "./constants"
+import { num, useInput } from "./utils"
 import Headhunter from "./headhunter"
 import Mirror from "./mirror"
 import headhunterImg from "./Headhunter.png"
@@ -60,172 +61,146 @@ const CARDS_RESPONSE = {
 
 // TODO: store league in localStorage
 
-class Home extends Component {
-    state = {
-        activeTab: 0,
-        yourTotal: 0,
-        cards: undefined,
-        // how much of current currency can be converted
-        liquidationRatio: 0.6,
-        league: LEAGUES[0],
-    }
+const LeagueSelect = ({ leagueInput }) => {
+    return (
+        <nav className="level" style={{ marginTop: "1rem", marginBottom: "1rem" }}>
+            <div className="level-item has-text-centered">
+                <div className="select">
+                    <select id="league" name="league" {...leagueInput}>
+                        {LEAGUES.map(league => (
+                            <option key={league} value={league}>
+                                {league}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+        </nav>
+    )
+}
 
-    handleChange = key => e => {
-        this.setState({ [key]: e.target.value })
-    }
+const Tabs = ({ activeTab, setActiveTab }) => (
+    <div className="tabs is-toggle is-fullwidth">
+        <ul>
+            <li>
+                <button
+                    className={`button is-large is-fullwidth ${activeTab === 0 ? "is-info" : ""}`}
+                    onClick={e => {
+                        setActiveTab(0)
+                    }}
+                >
+                    <span className="icon is-small">
+                        <i className="fas fa-image" />
+                    </span>
+                    <img src={headhunterImg} alt="Headhunter" style={{ height: "1.5rem" }} />
+                </button>
+            </li>
+            <li>
+                <button
+                    className={`button is-large is-fullwidth ${activeTab === 1 ? "is-info" : ""}`}
+                    onClick={e => {
+                        setActiveTab(1)
+                    }}
+                >
+                    <span className="icon is-small">
+                        <i className="fas fa-music" />
+                    </span>
+                    <img src={mirrorImg} alt="Mirror" style={{ height: "1.5rem" }} />
+                </button>
+            </li>
+        </ul>
+    </div>
+)
 
-    changeTab = idx => e => {
-        this.setState({ activeTab: idx })
-    }
-
-    renderTotalHeader() {
-        return (
-            <section className="section">
-                <nav className="level">
-                    <div className="level-item has-text-centered">
-                        <div>
-                            <p className="heading is-size-6">Total</p>
-                            <p className="title">
-                                <input
-                                    className="input"
-                                    type="text"
-                                    value={this.state.yourTotal}
-                                    onChange={this.handleChange("yourTotal")}
-                                />
-                            </p>
-                        </div>
-                    </div>
-                    <div className="level-item has-text-centered">
-                        <div>
-                            <p className="heading is-size-6">Progress</p>
-                            <p id="total_progress" className="title is-size-1" />
-                        </div>
-                    </div>
-                    <div className="level-item has-text-centered">
-                        <div>
-                            <p className="heading is-size-6">Liquidation Ratio</p>
-                            <p className="title">
-                                <input
-                                    className="input"
-                                    type="number"
-                                    value={this.state.liquidationRatio}
-                                    onChange={this.handleChange("liquidationRatio")}
-                                    min={0}
-                                    max={1}
-                                    step={0.1}
-                                />
-                            </p>
-                        </div>
-                    </div>
-                </nav>
-            </section>
-        )
-    }
-
-    renderLeagueSelect() {
-        return (
-            <nav className="level" style={{ marginTop: "1rem", marginBottom: "1rem" }}>
+const TotalHeader = ({ yourTotalInput, liquidationRatioInput, totalProgress }) => {
+    return (
+        <section className="section">
+            <nav className="level">
                 <div className="level-item has-text-centered">
-                    <div className="select">
-                        <select
-                            id="league"
-                            name="league"
-                            value={this.state.league}
-                            onChange={this.handleChange("league")}
-                        >
-                            {LEAGUES.map(league => (
-                                <option key={league} value={league}>
-                                    {league}
-                                </option>
-                            ))}
-                        </select>
+                    <div>
+                        <p className="heading is-size-6">Total</p>
+                        <p className="title">
+                            <input className="input" type="text" {...yourTotalInput} />
+                        </p>
+                    </div>
+                </div>
+                <div className="level-item has-text-centered">
+                    <div>
+                        <p className="heading is-size-6">Progress</p>
+                        <p className="title is-size-1">{num(totalProgress)}%</p>
+                    </div>
+                </div>
+                <div className="level-item has-text-centered">
+                    <div>
+                        <p className="heading is-size-6">Liquidation Ratio</p>
+                        <p className="title">
+                            <input
+                                className="input"
+                                type="number"
+                                {...liquidationRatioInput}
+                                min={0}
+                                max={1}
+                                step={0.1}
+                            />
+                        </p>
                     </div>
                 </div>
             </nav>
-        )
-    }
+        </section>
+    )
+}
 
-    renderTopTabs() {
-        return (
-            <div className="tabs is-toggle is-fullwidth">
-                <ul>
-                    <li className={this.state.activeTab === 0 ? "is-active" : ""}>
-                        <button
-                            className={`button is-large is-fullwidth ${
-                                this.state.activeTab === 0 ? "is-info" : ""
-                            }`}
-                            onClick={this.changeTab(0)}
-                        >
-                            <span className="icon is-small">
-                                <i className="fas fa-image" />
-                            </span>
-                            <img
-                                src={headhunterImg}
-                                alt="Headhunter"
-                                style={{ height: "1.5rem" }}
-                            />
-                        </button>
-                    </li>
-                    <li className={this.state.activeTab === 1 ? "is-active" : ""}>
-                        <button
-                            className={`button is-large is-fullwidth ${
-                                this.state.activeTab === 1 ? "is-info" : ""
-                            }`}
-                            onClick={this.changeTab(1)}
-                        >
-                            <span className="icon is-small">
-                                <i className="fas fa-music" />
-                            </span>
-                            <img src={mirrorImg} alt="Mirror" style={{ height: "1.5rem" }} />
-                        </button>
-                    </li>
-                </ul>
-            </div>
-        )
-    }
+const Main = ({ cards }) => {
+    cards = cardsById(cards)
+    const leagueInput = useInput(LEAGUES[0])
+    const [activeTab, setActiveTab] = useState(0)
+    const yourTotalInput = useInput(0)
+    const [totalProgress, setTotalProgress] = useState(0)
+    const liquidationRatioInput = useInput(0.6)
 
-    renderContent(cards) {
-        cards = cardsById(cards)
-        const { yourTotal, liquidationRatio } = this.state
-        const userTotal = yourTotal * liquidationRatio
+    const userTotal = yourTotalInput.value * liquidationRatioInput.value
 
-        return (
+    return (
+        <div>
+            <LeagueSelect leagueInput={leagueInput} />
+            <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
+            <TotalHeader
+                yourTotalInput={yourTotalInput}
+                liquidationRatioInput={liquidationRatioInput}
+                totalProgress={totalProgress}
+            />
             <div>
-                {this.renderLeagueSelect()}
-                {this.renderTopTabs()}
-                <div style={{ margin: "2rem" }}>{this.renderTotalHeader()}</div>
-                <div>
-                    {this.state.activeTab === 0 ? (
-                        <Headhunter cards={cards} userTotal={userTotal} />
-                    ) : (
-                        <Mirror cards={cards} userTotal={userTotal} />
-                    )}
-                </div>
+                {activeTab === 0 ? (
+                    <Headhunter cards={cards} userTotal={userTotal} />
+                ) : (
+                    <Mirror cards={cards} userTotal={userTotal} />
+                )}
             </div>
-        )
-    }
+        </div>
+    )
+}
 
-    render() {
-        /*
-        return (
-            <Query query={CARDS_QUERY}>
-                {({ loading, error, data: { ninjaItems: cards } }) => {
-                    if (loading) {
-                        // TODO: loading spinner
-                        return null
-                    }
-                    if (error) {
-                        console.error(error)
-                        return null
-                    }
+const Home = () => {
+    /*
+    return (
+        <Query query={CARDS_QUERY}>
+            {({ loading, error, data: { ninjaItems: cards } }) => {
+                if (loading) {
+                    // TODO: loading spinner
+                    return null
+                }
+                if (error) {
+                    console.error(error)
+                    return null
+                }
 
-                    return this.renderContent(cards)
-                }}
-            </Query>
-        )
-        */
-        return this.renderContent(CARDS_RESPONSE.data.ninjaItems)
-    }
+                return this.renderContent(cards)
+            }}
+        </Query>
+    )
+    */
+
+    return <Main cards={CARDS_RESPONSE.data.ninjaItems} />
 }
 
 export default Home
