@@ -7,6 +7,7 @@ import { LEAGUES } from "./constants"
 import { num, useInput } from "./utils"
 import Headhunter from "./headhunter"
 import Mirror from "./mirror"
+import Tabs from "./tabs"
 import headhunterImg from "./Headhunter.png"
 import mirrorImg from "./Mirror.png"
 
@@ -79,39 +80,6 @@ const LeagueSelect = ({ leagueInput }) => {
     )
 }
 
-const Tabs = ({ activeTab, setActiveTab }) => (
-    <div className="tabs is-toggle is-fullwidth">
-        <ul>
-            <li>
-                <button
-                    className={`button is-large is-fullwidth ${activeTab === 0 ? "is-info" : ""}`}
-                    onClick={e => {
-                        setActiveTab(0)
-                    }}
-                >
-                    <span className="icon is-small">
-                        <i className="fas fa-image" />
-                    </span>
-                    <img src={headhunterImg} alt="Headhunter" style={{ height: "1.5rem" }} />
-                </button>
-            </li>
-            <li>
-                <button
-                    className={`button is-large is-fullwidth ${activeTab === 1 ? "is-info" : ""}`}
-                    onClick={e => {
-                        setActiveTab(1)
-                    }}
-                >
-                    <span className="icon is-small">
-                        <i className="fas fa-music" />
-                    </span>
-                    <img src={mirrorImg} alt="Mirror" style={{ height: "1.5rem" }} />
-                </button>
-            </li>
-        </ul>
-    </div>
-)
-
 const TotalHeader = ({ yourTotalInput, liquidationRatioInput, totalProgress }) => {
     return (
         <section className="section">
@@ -153,7 +121,6 @@ const TotalHeader = ({ yourTotalInput, liquidationRatioInput, totalProgress }) =
 const Main = ({ cards }) => {
     cards = cardsById(cards)
     const leagueInput = useInput(LEAGUES[0])
-    const [activeTab, setActiveTab] = useState(0)
     const yourTotalInput = useInput(0)
     const [totalProgress, setTotalProgress] = useState(0)
     const liquidationRatioInput = useInput(0.6)
@@ -163,19 +130,20 @@ const Main = ({ cards }) => {
     return (
         <div>
             <LeagueSelect leagueInput={leagueInput} />
-            <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
             <TotalHeader
                 yourTotalInput={yourTotalInput}
                 liquidationRatioInput={liquidationRatioInput}
                 totalProgress={totalProgress}
             />
-            <div>
-                {activeTab === 0 ? (
-                    <Headhunter cards={cards} userTotal={userTotal} />
-                ) : (
-                    <Mirror cards={cards} userTotal={userTotal} />
-                )}
-            </div>
+            <Tabs
+                titles={[
+                    <img src={headhunterImg} alt="Headhunter" style={{ height: "1.5rem" }} />,
+                    <img src={mirrorImg} alt="Mirror" style={{ height: "1.5rem" }} />,
+                ]}
+            >
+                <Headhunter cards={cards} userTotal={userTotal} />
+                <Mirror cards={cards} userTotal={userTotal} />
+            </Tabs>
         </div>
     )
 }
