@@ -1,29 +1,68 @@
 import React, { Component } from "react"
+import { Query } from "react-apollo"
+import gql from "graphql-tag"
+import keyBy from "lodash/keyBy"
 
 import { LEAGUES } from "./constants"
-import { fetchCardRates } from "./utils"
 import Headhunter from "./headhunter"
 import Mirror from "./mirror"
 import headhunterImg from "./Headhunter.png"
 import mirrorImg from "./Mirror.png"
 
-const parseCards = cards => {
-    const ret = {}
+const CARDS_QUERY = gql`
+    query Cards {
+        ninjaItems(ids: [636, 1476, 1496, 1529]) {
+            id
+            name
+            stackSize
+            artFilename
+            chaosValue
+        }
+    }
+`
 
-    cards.forEach(card => {
-        const name = card.name
-            .toLowerCase()
-            .split(" ")
-            .pop()
-        ret[name] = card
-    })
+const cardsById = cards => keyBy(cards, "name")
 
-    return ret
+const CARDS_RESPONSE = {
+    data: {
+        ninjaItems: [
+            {
+                id: 636,
+                name: "House of Mirrors",
+                stackSize: 9,
+                artFilename: "HouseOfMirrors",
+                chaosValue: 3144.75,
+            },
+            {
+                id: 1476,
+                name: "The Doctor",
+                stackSize: 8,
+                artFilename: "TheDoctor",
+                chaosValue: 571.68,
+            },
+            {
+                id: 1496,
+                name: "The Fiend",
+                stackSize: 11,
+                artFilename: "TheFiend",
+                chaosValue: 357.3,
+            },
+            {
+                id: 1529,
+                name: "The Immortal",
+                stackSize: 10,
+                artFilename: "TheImmortal",
+                chaosValue: 303.9,
+            },
+        ],
+    },
 }
+
+// TODO: store league in localStorage
 
 class Home extends Component {
     state = {
-        activeTab: 0,
+        activeTab: 1,
         yourTotal: 0,
         cards: undefined,
         // how much of current currency can be converted
@@ -31,30 +70,12 @@ class Home extends Component {
         league: LEAGUES[0],
     }
 
-    componentDidMount() {
-        // init from localStorage
-        Object.keys(this.state).forEach(key => {
-            this.setState({
-                [key]: parseFloat(localStorage.getItem(key)) || 0,
-            })
-        })
-
-        // fetch divination cards
-        fetchCardRates(localStorage.getItem("league") || LEAGUES[0]).then(({ lines: cards }) => {
-            this.setState({
-                cards: parseCards(cards),
-            })
-        })
-    }
-
     handleChange = key => e => {
         this.setState({ [key]: e.target.value })
-        localStorage.setItem(key, e.target.value)
     }
 
     changeTab = idx => e => {
         this.setState({ activeTab: idx })
-        localStorage.setItem("activeTab", idx)
     }
 
     renderTotalHeader() {
@@ -153,11 +174,8 @@ class Home extends Component {
         )
     }
 
-    render() {
-        if (!this.state.cards) {
-            return null
-        }
-
+    renderContent(cards) {
+        cards = cardsById(cards)
         return (
             <div>
                 {this.renderLeagueSelect()}
@@ -165,13 +183,43 @@ class Home extends Component {
                 <div style={{ margin: "2rem" }}>{this.renderTotalHeader()}</div>
                 <div>
                     {this.state.activeTab === 0 ? (
-                        <Headhunter {...this.state} />
+                        <Headhunter
+                            cards={cards}
+                            yourTotal={this.state.yourTotal}
+                            liquidationRatio={this.state.liquidationRatio}
+                        />
                     ) : (
-                        <Mirror {...this.state} />
+                        <Mirror
+                            cards={cards}
+                            yourTotal={this.state.yourTotal}
+                            liquidationRatio={this.state.liquidationRatio}
+                        />
                     )}
                 </div>
             </div>
         )
+    }
+
+    render() {
+        /*
+        return (
+            <Query query={CARDS_QUERY}>
+                {({ loading, error, data: { ninjaItems: cards } }) => {
+                    if (loading) {
+                        // TODO: loading spinner
+                        return null
+                    }
+                    if (error) {
+                        console.error(error)
+                        return null
+                    }
+
+                    return this.renderContent(cards)
+                }}
+            </Query>
+        )
+        */
+        return this.renderContent(CARDS_RESPONSE.data.ninjaItems)
     }
 }
 

@@ -1,24 +1,24 @@
 import React from "react"
 
-import { CARD_DATA } from "./constants"
 import { num } from "./utils"
 
 const leagueEnd = new Date(2018, 5 - 1, 28, 4)
 const DAYS_LEFT = Math.floor((leagueEnd.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
 
-const DivCard = ({ total, cardName, value, count = 0, onChangeCardCount }) => {
-    const CARD = CARD_DATA[cardName.toLowerCase()]
-
-    const cardTotal = value * CARD.total
+const DivCard = ({ card, total, count = 0, onChangeCardCount }) => {
+    const { name, artFilename, chaosValue, stackSize } = card
+    const cardTotal = chaosValue * stackSize
     // take the completed ratio into account, since that is locked in stone
-    const cardRemaining = (CARD.total - count) * value
+    const cardRemaining = (stackSize - count) * chaosValue
+
+    const imgUrl = `${process.env.PUBLIC_URL}/images/${artFilename}.png`
 
     return (
         <div className="column">
             <div className="card">
                 <div className="card-image">
                     <figure className="image">
-                        <img alt={cardName} src={CARD.image} />
+                        <img alt={name} src={imgUrl} />
                     </figure>
                 </div>
                 <div className="card-content">
@@ -31,13 +31,13 @@ const DivCard = ({ total, cardName, value, count = 0, onChangeCardCount }) => {
                                         className="input is-small"
                                         type="number"
                                         min={0}
-                                        max={CARD.total}
+                                        max={stackSize}
                                         value={count}
                                         onChange={onChangeCardCount}
-                                        style={{ width: 50, marginRight: 8 }}
+                                        style={{ width: 80, marginRight: 8 }}
                                     />
                                     {" of "}
-                                    {CARD.total}
+                                    {stackSize}
                                 </td>
                             </tr>
                             <tr>
@@ -55,7 +55,13 @@ const DivCard = ({ total, cardName, value, count = 0, onChangeCardCount }) => {
                             <tr>
                                 <td className="has-text-right">Progress</td>
                                 <td>
-                                    {num(Math.min((count * value + total) / cardTotal * 100, 100))}%
+                                    {num(
+                                        Math.min(
+                                            ((count * chaosValue + total) / cardTotal) * 100,
+                                            100
+                                        )
+                                    )}
+                                    %
                                 </td>
                             </tr>
                         </tbody>

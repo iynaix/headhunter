@@ -1,41 +1,32 @@
-import React from "react"
+import React, { Component } from "react"
 import ReactDOM from "react-dom"
 
-import { CARD_DATA } from "./constants"
 import { num } from "./utils"
 import DivCard from "./div_card"
 
-class Headhunter extends React.Component {
+class Headhunter extends Component {
     state = {
         doctorCount: 0,
-        fiendCount: 8,
+        fiendCount: 0,
     }
 
     handleChange = key => e => {
         this.setState({ [key]: e.target.value })
-        localStorage.setItem(key, e.target.value)
-    }
-
-    componentDidMount() {
-        // init from localStorage
-        Object.keys(this.state).forEach(key => {
-            this.setState({
-                [key]: parseFloat(localStorage.getItem(key)) || 0,
-            })
-        })
     }
 
     getTotalProgress = () => {
-        const { doctor, fiend } = this.props.cards
+        const fiend = this.props.cards["The Fiend"]
+        const doctor = this.props.cards["The Doctor"]
+
         const total = this.props.yourTotal * this.props.liquidationRatio
 
         const fiendProgress =
             (this.state.fiendCount * fiend.chaosValue + total) /
-            (fiend.chaosValue * CARD_DATA.fiend.total)
+            (fiend.chaosValue * fiend.stackSize)
 
         const doctorProgress =
             (this.state.doctorCount * doctor.chaosValue + total) /
-            (doctor.chaosValue * CARD_DATA.doctor.total)
+            (doctor.chaosValue * doctor.stackSize)
 
         const progress = Math.max(fiendProgress, doctorProgress) * 100
 
@@ -45,23 +36,20 @@ class Headhunter extends React.Component {
     render() {
         const totalProgressEl = document.getElementById("total_progress")
         const { yourTotal, liquidationRatio, cards } = this.props
-        const { doctor, fiend } = cards
 
         return (
             <div className="columns">
                 <DivCard
+                    card={cards["The Fiend"]}
                     total={yourTotal * liquidationRatio}
-                    cardName="Fiend"
                     count={this.state.fiendCount}
-                    value={fiend.chaosValue}
                     onChangeCardCount={this.handleChange("fiendCount")}
                 />
 
                 <DivCard
+                    card={cards["The Doctor"]}
                     total={yourTotal * liquidationRatio}
-                    cardName="Doctor"
                     count={this.state.doctorCount}
-                    value={doctor.chaosValue}
                     onChangeCardCount={this.handleChange("doctorCount")}
                 />
 
