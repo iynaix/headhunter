@@ -150,7 +150,12 @@ class Home extends Component {
             <div className="tabs is-toggle is-fullwidth">
                 <ul>
                     <li className={this.state.activeTab === 0 ? "is-active" : ""}>
-                        <a onClick={this.changeTab(0)}>
+                        <button
+                            className={`button is-large is-fullwidth ${
+                                this.state.activeTab === 0 ? "is-info" : ""
+                            }`}
+                            onClick={this.changeTab(0)}
+                        >
                             <span className="icon is-small">
                                 <i className="fas fa-image" />
                             </span>
@@ -159,15 +164,20 @@ class Home extends Component {
                                 alt="Headhunter"
                                 style={{ height: "1.5rem" }}
                             />
-                        </a>
+                        </button>
                     </li>
                     <li className={this.state.activeTab === 1 ? "is-active" : ""}>
-                        <a onClick={this.changeTab(1)}>
+                        <button
+                            className={`button is-large is-fullwidth ${
+                                this.state.activeTab === 1 ? "is-info" : ""
+                            }`}
+                            onClick={this.changeTab(1)}
+                        >
                             <span className="icon is-small">
                                 <i className="fas fa-music" />
                             </span>
                             <img src={mirrorImg} alt="Mirror" style={{ height: "1.5rem" }} />
-                        </a>
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -176,6 +186,9 @@ class Home extends Component {
 
     renderContent(cards) {
         cards = cardsById(cards)
+        const { yourTotal, liquidationRatio } = this.state
+        const userTotal = yourTotal * liquidationRatio
+
         return (
             <div>
                 {this.renderLeagueSelect()}
@@ -183,17 +196,9 @@ class Home extends Component {
                 <div style={{ margin: "2rem" }}>{this.renderTotalHeader()}</div>
                 <div>
                     {this.state.activeTab === 0 ? (
-                        <Headhunter
-                            cards={cards}
-                            yourTotal={this.state.yourTotal}
-                            liquidationRatio={this.state.liquidationRatio}
-                        />
+                        <Headhunter cards={cards} userTotal={userTotal} />
                     ) : (
-                        <Mirror
-                            cards={cards}
-                            yourTotal={this.state.yourTotal}
-                            liquidationRatio={this.state.liquidationRatio}
-                        />
+                        <Mirror cards={cards} userTotal={userTotal} />
                     )}
                 </div>
             </div>

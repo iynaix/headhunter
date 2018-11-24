@@ -5,7 +5,7 @@ import { num } from "./utils"
 const leagueEnd = new Date(2018, 5 - 1, 28, 4)
 const DAYS_LEFT = Math.floor((leagueEnd.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
 
-const DivCard = ({ card, total, count = 0, onChangeCardCount }) => {
+const DivCard = ({ card, userTotal, count = 0, onChangeCardCount }) => {
     const { name, artFilename, chaosValue, stackSize } = card
     const cardTotal = chaosValue * stackSize
     // take the completed ratio into account, since that is locked in stone
@@ -50,14 +50,14 @@ const DivCard = ({ card, total, count = 0, onChangeCardCount }) => {
                             </tr>
                             <tr>
                                 <td className="has-text-right">Chaos Per Day</td>
-                                <td>{num(Math.max((cardRemaining - total) / DAYS_LEFT, 0))}</td>
+                                <td>{num(Math.max((cardRemaining - userTotal) / DAYS_LEFT, 0))}</td>
                             </tr>
                             <tr>
                                 <td className="has-text-right">Progress</td>
                                 <td>
                                     {num(
                                         Math.min(
-                                            ((count * chaosValue + total) / cardTotal) * 100,
+                                            ((count * chaosValue + userTotal) / cardTotal) * 100,
                                             100
                                         )
                                     )}
