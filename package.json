@@ -16,7 +16,8 @@
         "build": "react-scripts build",
         "test": "react-scripts test --env=jsdom",
         "eject": "react-scripts eject",
-        "deploy": "react-scripts build && netlify deploy"
+        "deploy": "react-scripts build && netlify deploy --dir=build --prod",
+        "deploy:draft": "react-scripts build && netlify deploy --dir=build"
     },
     "eslintConfig": {
         "extends": "react-app"
