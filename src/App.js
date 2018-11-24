@@ -40,7 +40,7 @@ class Home extends Component {
         })
 
         // fetch divination cards
-        fetchCardRates(localStorage.getItem("league")).then(({ lines: cards }) => {
+        fetchCardRates(localStorage.getItem("league") || LEAGUES[0]).then(({ lines: cards }) => {
             this.setState({
                 cards: parseCards(cards),
             })

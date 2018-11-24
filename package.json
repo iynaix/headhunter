@@ -1,21 +1,30 @@
 {
-  "name": "headhunter",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "apollo-boost": "^0.1.22",
-    "graphql": "^14.0.2",
-    "netlify-cli": "^2.2.1",
-    "react": "^16.7.0-alpha.2",
-    "react-apollo": "^2.3.1",
-    "react-dom": "^16.7.0-alpha.2",
-    "react-scripts": "2.1.1"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "deploy": "react-scripts build && netlify deploy"
-  }
+    "name": "headhunter",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "apollo-boost": "^0.1.22",
+        "graphql": "^14.0.2",
+        "netlify-cli": "^2.2.1",
+        "react": "^16.7.0-alpha.2",
+        "react-apollo": "^2.3.1",
+        "react-dom": "^16.7.0-alpha.2",
+        "react-scripts": "2.1.1"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test --env=jsdom",
+        "eject": "react-scripts eject",
+        "deploy": "react-scripts build && netlify deploy"
+    },
+    "eslintConfig": {
+        "extends": "react-app"
+    },
+    "browserslist": [
+        ">0.2%",
+        "not dead",
+        "not ie <= 11",
+        "not op_mini all"
+    ]
 }
