@@ -1,5 +1,4 @@
 import React, { Component } from "react"
-import "./bulmaswatch.min.css"
 
 import { LEAGUES } from "./constants"
 import { fetchCardRates } from "./utils"

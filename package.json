@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "netlify-cli": "^1.2.2",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "react-scripts": "1.0.17"
+    "apollo-boost": "^0.1.22",
+    "graphql": "^14.0.2",
+    "netlify-cli": "^2.2.1",
+    "react": "^16.7.0-alpha.2",
+    "react-apollo": "^2.3.1",
+    "react-dom": "^16.7.0-alpha.2",
+    "react-scripts": "2.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
