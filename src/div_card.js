@@ -2,7 +2,7 @@ import React from "react"
 
 import { num } from "./utils"
 
-const leagueEnd = new Date(2018, 5 - 1, 28, 4)
+const leagueEnd = new Date(2018, 12 - 1, 8, 4)
 const DAYS_LEFT = Math.floor((leagueEnd.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
 
 const DivCard = ({ card, userTotal, count }) => {

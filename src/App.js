@@ -1,10 +1,10 @@
-import React, { useState } from "react"
+import React from "react"
 import { Query } from "react-apollo"
 import gql from "graphql-tag"
 import keyBy from "lodash/keyBy"
 
 import { LEAGUES } from "./constants"
-import { num, useInput } from "./utils"
+import { useInput } from "./utils"
 import Headhunter from "./headhunter"
 import Mirror from "./mirror"
 import Tabs from "./tabs"
@@ -62,40 +62,28 @@ const CARDS_RESPONSE = {
 
 // TODO: store league in localStorage
 
-const LeagueSelect = ({ leagueInput }) => {
-    return (
-        <nav className="level" style={{ marginTop: "1rem", marginBottom: "1rem" }}>
-            <div className="level-item has-text-centered">
-                <div className="select">
-                    <select id="league" name="league" {...leagueInput}>
-                        {LEAGUES.map(league => (
-                            <option key={league} value={league}>
-                                {league}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            </div>
-        </nav>
-    )
-}
-
-const TotalHeader = ({ yourTotalInput, liquidationRatioInput, totalProgress }) => {
+const TotalHeader = ({ leagueInput, yourTotalInput, liquidationRatioInput }) => {
     return (
         <section className="section">
             <nav className="level">
+                <div className="level-item has-text-centered" style={{ flexDirection: "column" }}>
+                    <p className="heading is-size-6">League</p>
+                    <div className="select">
+                        <select id="league" name="league" {...leagueInput}>
+                            {LEAGUES.map(league => (
+                                <option key={league} value={league}>
+                                    {league}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
                 <div className="level-item has-text-centered">
                     <div>
                         <p className="heading is-size-6">Total</p>
                         <p className="title">
                             <input className="input" type="text" {...yourTotalInput} />
                         </p>
-                    </div>
-                </div>
-                <div className="level-item has-text-centered">
-                    <div>
-                        <p className="heading is-size-6">Progress</p>
-                        <p className="title is-size-1">{num(totalProgress)}%</p>
                     </div>
                 </div>
                 <div className="level-item has-text-centered">
@@ -122,18 +110,16 @@ const Main = ({ cards }) => {
     cards = cardsById(cards)
     const leagueInput = useInput(LEAGUES[0])
     const yourTotalInput = useInput(0)
-    const [totalProgress, setTotalProgress] = useState(0)
     const liquidationRatioInput = useInput(0.6)
 
     const userTotal = yourTotalInput.value * liquidationRatioInput.value
 
     return (
         <div>
-            <LeagueSelect leagueInput={leagueInput} />
             <TotalHeader
+                leagueInput={leagueInput}
                 yourTotalInput={yourTotalInput}
                 liquidationRatioInput={liquidationRatioInput}
-                totalProgress={totalProgress}
             />
             <Tabs
                 titles={[

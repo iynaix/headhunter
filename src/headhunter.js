@@ -1,6 +1,6 @@
 import React from "react"
 
-import { useInput } from "./utils"
+import { num, useInput } from "./utils"
 import DivCard from "./div_card"
 
 const cardProgress = (card, userTotal, count) =>
@@ -23,13 +23,21 @@ const Headhunter = ({ cards, userTotal }) => {
         ) || 0
 
     return (
-        <div className="columns">
-            <DivCard card={fiend} userTotal={userTotal} count={fiendCountInput} />
+        <>
+            <div className="columns">
+                <DivCard card={fiend} userTotal={userTotal} count={fiendCountInput} />
 
-            <DivCard card={doctor} userTotal={userTotal} count={doctorCountInput} />
-
-            {/* {totalProgressEl && ReactDOM.createPortal(`${num(totalProgress)}%`)} */}
-        </div>
+                <DivCard card={doctor} userTotal={userTotal} count={doctorCountInput} />
+            </div>
+            <div className="section">
+                <div className="level-item has-text-centered">
+                    <div>
+                        <p className="heading is-size-6">Total Progress</p>
+                        <p className="title is-size-1">{num(totalProgress)}%</p>
+                    </div>
+                </div>
+            </div>
+        </>
     )
 }
 
