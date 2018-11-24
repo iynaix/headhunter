@@ -11,7 +11,7 @@ const DivCard = ({ card, userTotal, count }) => {
     // take the completed ratio into account, since that is locked in stone
     const cardRemaining = (stackSize - count.value) * chaosValue
 
-    const imgUrl = `${process.env.PUBLIC_URL}/images/${artFilename}.png`
+    const imgUrl = `https://web.poecdn.com/image/gen/divination_cards/${artFilename}.png`
 
     return (
         <div className="column">

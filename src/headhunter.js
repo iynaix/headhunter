@@ -7,8 +7,8 @@ const cardProgress = (card, userTotal, count) =>
     (count * card.chaosValue + userTotal) / (card.chaosValue * card.stackSize)
 
 const Headhunter = ({ cards, userTotal }) => {
-    const fiendCountInput = useInput(0)
-    const doctorCountInput = useInput(0)
+    const fiendCountInput = useInput("fiendCount", 0)
+    const doctorCountInput = useInput("doctorCount", 0)
 
     const fiend = cards["The Fiend"]
     const doctor = cards["The Doctor"]

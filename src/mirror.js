@@ -4,8 +4,8 @@ import { num, useInput } from "./utils"
 import DivCard from "./div_card"
 
 const Mirror = ({ cards, userTotal }) => {
-    const immortalCountInput = useInput(0)
-    const houseOfMirrorsCountInput = useInput(0)
+    const immortalCountInput = useInput("immortalCount", 0)
+    const houseOfMirrorsCountInput = useInput("houseOfMirrorsCount", 0)
 
     const immortal = cards["The Immortal"]
     const houseOfMirrors = cards["House of Mirrors"]

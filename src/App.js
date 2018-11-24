@@ -60,8 +60,6 @@ const CARDS_RESPONSE = {
     },
 }
 
-// TODO: store league in localStorage
-
 const TotalHeader = ({ leagueInput, yourTotalInput, liquidationRatioInput }) => {
     return (
         <section className="section">
@@ -108,9 +106,9 @@ const TotalHeader = ({ leagueInput, yourTotalInput, liquidationRatioInput }) => 
 
 const Main = ({ cards }) => {
     cards = cardsById(cards)
-    const leagueInput = useInput(LEAGUES[0])
-    const yourTotalInput = useInput(0)
-    const liquidationRatioInput = useInput(0.6)
+    const leagueInput = useInput("league", LEAGUES[0])
+    const yourTotalInput = useInput("yourTotal", 0)
+    const liquidationRatioInput = useInput("liquidationRatio", 0.6)
 
     const userTotal = yourTotalInput.value * liquidationRatioInput.value
 
