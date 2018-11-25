@@ -1,4 +1,8 @@
-const leagueVariants = league =>
-    league === "Standard" ? ["Standard", "Hardcore"] : [league, `HC ${league}`]
+const TMPSTANDARD = "Delve"
 
-export const LEAGUES = [...leagueVariants("Delve"), ...leagueVariants("Standard")]
+export const LEAGUES = {
+    tmpstandard: "Delve",
+    tmphardcore: `Hardcore ${TMPSTANDARD}`,
+    standard: "Standard",
+    hardcore: "Hardcore",
+}

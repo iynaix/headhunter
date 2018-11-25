@@ -9,12 +9,10 @@ import Headhunter from "./headhunter"
 import Mirror from "./mirror"
 import Spinner from "./spinner"
 import Tabs from "./tabs"
-import headhunterImg from "./Headhunter.png"
-import mirrorImg from "./Mirror.png"
 
 const CARDS_QUERY = gql`
-    query Cards {
-        ninjaItems(ids: [636, 1476, 1496, 1529]) {
+    query Cards($league: League!) {
+        ninjaItems(ids: [636, 1476, 1496, 1529], league: $league) {
             id
             name
             stackSize
@@ -31,9 +29,9 @@ const OptionHeader = ({ leagueInput, yourTotalInput, liquidationRatioInput }) =>
                 <p className="heading is-size-6">League</p>
                 <div className="select">
                     <select id="league" name="league" {...leagueInput}>
-                        {LEAGUES.map(league => (
+                        {Object.keys(LEAGUES).map(league => (
                             <option key={league} value={league}>
-                                {league}
+                                {LEAGUES[league]}
                             </option>
                         ))}
                     </select>
@@ -67,7 +65,7 @@ const OptionHeader = ({ leagueInput, yourTotalInput, liquidationRatioInput }) =>
 )
 
 const Home = () => {
-    const leagueInput = useInput("league", LEAGUES[0])
+    const leagueInput = useInput("league", "tmpstandard")
     const yourTotalInput = useInput("yourTotal", 0)
     const liquidationRatioInput = useInput("liquidationRatio", 0.6)
 
@@ -81,7 +79,7 @@ const Home = () => {
                 liquidationRatioInput={liquidationRatioInput}
             />
 
-            <Query query={CARDS_QUERY}>
+            <Query query={CARDS_QUERY} variables={{ league: leagueInput.value }}>
                 {({ loading, error, data: { ninjaItems: cards } }) => {
                     if (loading) {
                         return (
@@ -107,11 +105,15 @@ const Home = () => {
                         <Tabs
                             titles={[
                                 <img
-                                    src={headhunterImg}
+                                    src="https://web.poecdn.com/image/Art/2DItems/Belts/Headhunter.png?scale=1&scaleIndex=0&w=2&h=1"
                                     alt="Headhunter"
                                     style={{ height: "1.5rem" }}
                                 />,
-                                <img src={mirrorImg} alt="Mirror" style={{ height: "1.5rem" }} />,
+                                <img
+                                    src="https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyDuplicate.png?scale=1&w=1&h=1"
+                                    alt="Mirror"
+                                    style={{ height: "1.5rem" }}
+                                />,
                             ]}
                         >
                             <Headhunter cards={cards} userTotal={userTotal} />
